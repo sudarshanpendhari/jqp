@@ -1,0 +1,1433 @@
+#include <iostream>
+using namespace std;
+
+int fibonacciIterative(int n) {
+    if (n <= 1)
+        return n;
+    int a = 0, b = 1, fib;
+    for (int i = 2; i <= n; ++i) {
+        fib = a + b;
+        a = b;
+        b = fib;
+    }
+    return fib;
+}
+
+int fibonacciRecursive(int n) {
+    if (n <= 1)
+        return n;
+    return fibonacciRecursive(n - 1) + fibonacciRecursive(n - 2);
+}
+
+int main() {
+    int n;
+    cout << "Enter a number to calculate Fibonacci: ";
+    cin >> n;
+
+    cout << "Fibonacci (Iterative) of " << n << " is: " << fibonacciIterative(n) << endl;
+    cout << "Fibonacci (Recursive) of " << n << " is: " << fibonacciRecursive(n) << endl;
+
+    return 0;
+}
+
+
+#####################################################################################################################
+Huffman tree
+
+
+
+class node:
+	def __init__(self, freq, symbol, left=None, right=None):
+		# frequency of symbol
+		self.freq = freq
+
+		# symbol name (character)
+		self.symbol = symbol
+
+		# node left of current node
+		self.left = left
+
+		# node right of current node
+		self.right = right
+
+		# tree direction (0/1)
+		self.huff = ''
+
+# utility function to print huffman
+# codes for all symbols in the newly
+# created Huffman tree
+
+
+def printNodes(node, val=''):
+	# huffman code for current node
+	newVal = val + str(node.huff)
+
+	# if node is not an edge node
+	# then traverse inside it
+	if(node.left):
+		printNodes(node.left, newVal)
+	if(node.right):
+		printNodes(node.right, newVal)
+
+		# if node is edge node then
+		# display its huffman code
+	if(not node.left and not node.right):
+		print(f"{node.symbol} -> {newVal}")
+
+
+# characters for huffman tree
+chars = ['a', 'b', 'c', 'd', 'e', 'f']
+
+# frequency of characters
+freq = [ 5, 9, 12, 13, 16, 45]
+
+# list containing unused nodes
+nodes = []
+
+# converting characters and frequencies
+# into huffman tree nodes
+for x in range(len(chars)):
+	nodes.append(node(freq[x], chars[x]))
+
+while len(nodes) > 1:
+	# sort all the nodes in ascending order
+	# based on their frequency
+	nodes = sorted(nodes, key=lambda x: x.freq)
+
+	# pick 2 smallest nodes
+	left = nodes[0]
+	right = nodes[1]
+
+	# assign directional value to these nodes
+	left.huff = 0
+	right.huff = 1
+
+	# combine the 2 smallest nodes to create
+	# new node as their parent
+	newNode = node(left.freq+right.freq, left.symbol+right.symbol, left, right)
+	nodes.remove(left)
+	nodes.remove(right)
+	nodes.append(newNode) 
+
+# Huffman Tree is ready!
+printNodes(nodes[0])
+
+
+
+##################################################################################################
+Fractional Knapsack
+
+
+
+
+
+
+
+
+
+
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+
+struct Item {
+	int profit, weight;
+
+	Item(int profit, int weight)
+	{
+		this->profit = profit;
+		this->weight = weight;
+	}
+};
+
+
+static bool cmp(struct Item a, struct Item b)
+{
+	double r1 = (double)a.profit / (double)a.weight;
+	double r2 = (double)b.profit / (double)b.weight;
+	return r1 > r2;
+}
+
+double fractionalKnapsack(int W, struct Item arr[], int N)
+{
+	sort(arr, arr + N, cmp);
+
+	double finalvalue = 0.0;
+
+	for (int i = 0; i < N; i++) {
+		
+		if (arr[i].weight <= W) {
+			W -= arr[i].weight;
+			finalvalue += arr[i].profit;
+		}
+		
+		else {
+			finalvalue
+				+= arr[i].profit
+				* ((double)W / (double)arr[i].weight);
+			break;
+		}
+	}
+
+	return finalvalue;
+}
+
+int main()
+{
+	int W = 50;
+	Item arr[] = { { 60, 10 }, { 100, 20 }, { 120, 30 } };
+	int N = sizeof(arr) / sizeof(arr[0]);
+
+	cout << fractionalKnapsack(W, arr, N);
+	return 0;
+}
+
+
+###########################################################################
+0/1 knapsack
+
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int knapSack(int W, int wt[], int val[], int n)
+{
+
+    if (n == 0 || W == 0)
+        return 0;
+
+    if (wt[n - 1] > W)
+        return knapSack(W, wt, val, n - 1);
+
+    else
+        return max(knapSack(W, wt, val, n - 1), 
+         val[n - 1] + knapSack(W - wt[n - 1], wt, val, n - 1));
+}
+
+int main()
+{
+    int profit[] = { 60, 100, 120 };
+    int weight[] = { 10, 20, 30 };
+    int W = 50;
+    int n = sizeof(profit) / sizeof(profit[0]);
+    cout << knapSack(W, weight, profit, n);
+    return 0;
+}
+
+
+######################################################################################
+
+nqueen first queen is placed at first place 
+
+def isSafe(board, row, col):
+    # Check column for any queen in the same column
+    for i in range(row):
+        if board[i][col] == 'Q':
+            return False
+
+    # Check upper-left diagonal
+    i, j = row, col
+    while i >= 0 and j >= 0:
+        if board[i][j] == 'Q':
+            return False
+        i -= 1
+        j -= 1
+
+    # Check upper-right diagonal
+    i, j = row, col
+    while i >= 0 and j < len(board):
+        if board[i][j] == 'Q':
+            return False
+        i -= 1
+        j += 1
+
+    return True
+
+def printBoard(board):
+    for row in board:
+        print(" ".join(row))
+    print()
+
+def placeQueens(board, row):
+    # Base case: All queens are placed
+    if row == len(board):
+        printBoard(board)
+        return True
+
+    # Try placing queen in each column for current row
+    for col in range(len(board)):
+        if isSafe(board, row, col):
+            # Place queen
+            board[row][col] = 'Q'
+
+            # Recur to place the rest of the queens
+            if placeQueens(board, row + 1):
+                return True  # Stop after finding the first solution
+
+            # Backtrack if placing queen here doesn't lead to a solution
+            board[row][col] = '.'
+
+    return False
+
+def solveNQueens(n):
+    # Initialize board with '.' and place the first queen at top-left corner
+    board = [['.' for _ in range(n)] for _ in range(n)]
+    board[0][0] = 'Q'  # Place the first queen in the top-left
+
+    # Start placing the remaining queens
+    if not placeQueens(board, 1):  # Start from the second row
+        print("No solution found")
+
+# Example usage for a 4x4 board
+solveNQueens(8)
+
+
+##########################################################################
+normal nqueen
+
+
+def isSafe(mat, r, c):
+    # Check column for any queen in the same column
+    for i in range(r):
+        if mat[i][c] == 'Q':
+            return False
+
+    # Check upper-left diagonal
+    i, j = r, c
+    while i >= 0 and j >= 0:
+        if mat[i][j] == 'Q':
+            return False
+        i -= 1
+        j -= 1
+
+    # Check upper-right diagonal
+    i, j = r, c
+    while i >= 0 and j < len(mat):
+        if mat[i][j] == 'Q':
+            return False
+        i -= 1
+        j += 1
+
+    return True
+
+
+def printSolution(mat):
+    for row in mat:
+        print(" ".join(row))
+    print()
+
+
+def nQueen(mat, r):
+    # Base case: If all queens are placed
+    if r == len(mat):
+        printSolution(mat)
+        return
+
+    # Try placing queen in all columns in current row `r`
+    for i in range(len(mat)):
+        if isSafe(mat, r, i):
+            mat[r][i] = 'Q'
+
+            nQueen(mat, r + 1)
+
+            mat[r][i] = '–'
+
+
+if __name__ == '__main__':
+    N = 4
+    # Initialize the board with '–'
+    mat = [['–' for _ in range(N)] for _ in range(N)]
+
+    nQueen(mat, 0)
+
+
+
+
+###############################################################################
+
+
+# -*- coding: utf-8 -*-
+"""ML_1_Uber.ipynb
+
+Automatically generated by Colab.
+
+Original file is located at
+    https://colab.research.google.com/drive/1quNdf5WkGEr8aR1R2NenvWk1doSXoCto
+
+# #Predict the price of the Uber ride from a given pickup point to the agreed drop-off location. Perform following tasks:
+1.	Pre-process the dataset.
+2.	Identify outliers.
+3.	Check the correlation.
+4.	Implement linear regression and random forest regression models.
+5.	Evaluate the models and compare their respective scores like R2, RMSE, etc. Dataset link: https://www.kaggle.com/datasets/yasserh/uber-fares-dataset
+"""
+
+#Importing the required libraries
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+#importing the dataset
+df  = pd.read_csv("/content/uber.csv")
+
+"""##  1.	Pre-process the dataset."""
+
+df.head()
+
+df.info() #To get the required information of the dataset
+
+df.columns #TO get number of columns in the dataset
+
+df = df.drop(['Unnamed: 0', 'key'], axis= 1) #To drop unnamed column as it isn't required
+
+df.head()
+
+df.shape #To get the total (Rows,Columns)
+
+df.dtypes #To get the type of each column
+
+df.info()
+
+df.describe() #To get statistics of each columns
+
+"""### Filling Missing values"""
+
+df.isnull().sum()
+
+df['dropoff_latitude'].fillna(value=df['dropoff_latitude'].mean(),inplace = True)
+df['dropoff_longitude'].fillna(value=df['dropoff_longitude'].median(),inplace = True)
+
+df['dropoff_latitude']
+
+df.head(10)
+
+df.isnull().sum()
+
+df.dtypes
+
+"""### Column pickup_datetime is in wrong format (Object). Convert it to DateTime Format"""
+
+df.pickup_datetime = pd.to_datetime(df.pickup_datetime,)
+
+df.dtypes
+
+"""### To segregate each time of date and time"""
+
+df= df.assign(hour = df.pickup_datetime.dt.hour,
+             day= df.pickup_datetime.dt.day,
+             month = df.pickup_datetime.dt.month,
+             year = df.pickup_datetime.dt.year,
+             dayofweek = df.pickup_datetime.dt.dayofweek)
+
+df.head()
+
+
+
+# drop the column 'pickup_daetime' using drop()
+# 'axis = 1' drops the specified column
+
+df = df.drop('pickup_datetime',axis=1)
+
+df.head()
+
+df.dtypes
+
+"""## Checking outliers and filling them"""
+
+df.plot(kind = "box",subplots = True,layout = (7,2),figsize=(15,20)) #Boxplot to check the outliers
+
+#Using the InterQuartile Range to fill the values
+def remove_outlier(df1 , col):
+    Q1 = df1[col].quantile(0.25)
+    Q3 = df1[col].quantile(0.75)
+    IQR = Q3 - Q1
+    lower_whisker = Q1-1.5*IQR
+    upper_whisker = Q3+1.5*IQR
+    df[col] = np.clip(df1[col] , lower_whisker , upper_whisker)
+    return df1
+
+def treat_outliers_all(df1 , col_list):
+    for c in col_list:
+        df1 = remove_outlier(df , c)
+    return df1
+
+df = treat_outliers_all(df , df.iloc[: , 0::])
+
+df.plot(kind = "box",subplots = True,layout = (7,2),figsize=(15,20)) #Boxplot shows that dataset is free from outliers
+
+#!pip install haversine
+
+!pip install haversine
+import haversine as hs  #Calculate the distance using Haversine to calculate the distance between to points. Can't use Eucladian as it is for flat surface.
+travel_dist = []
+for pos in range(len(df['pickup_longitude'])):
+        long1,lati1,long2,lati2 = [df['pickup_longitude'][pos],df['pickup_latitude'][pos],df['dropoff_longitude'][pos],df['dropoff_latitude'][pos]]
+        loc1=(lati1,long1)
+        loc2=(lati2,long2)
+        c = hs.haversine(loc1,loc2)
+        travel_dist.append(c)
+
+print(travel_dist)
+df['dist_travel_km'] = travel_dist
+df.head()
+
+travel_dist
+
+#Uber doesn't travel over 130 kms so minimize the distance
+df= df.loc[(df.dist_travel_km >= 1) | (df.dist_travel_km <= 130)]
+print("Remaining observastions in the dataset:", df.shape)
+
+#Finding inccorect latitude (Less than or greater than 90) and longitude (greater than or less than 180)
+incorrect_coordinates = df.loc[(df.pickup_latitude > 90) |(df.pickup_latitude < -90) |
+                                   (df.dropoff_latitude > 90) |(df.dropoff_latitude < -90) |
+                                   (df.pickup_longitude > 180) |(df.pickup_longitude < -180) |
+                                   (df.dropoff_longitude > 180) |(df.dropoff_longitude < -180)
+                                    ]
+
+incorrect_coordinates
+
+df.drop(incorrect_coordinates, inplace = True, errors = 'ignore')
+
+df.head()
+
+df.isnull().sum()
+
+sns.heatmap(df.isnull()) #Free for null values
+
+corr = df.corr() #Function to find the correlation
+
+corr
+
+fig,axis = plt.subplots(figsize = (10,6))
+sns.heatmap(df.corr(),annot = True) #Correlation Heatmap (Light values means highly correlated)
+
+"""### Dividing the dataset into feature and target values"""
+
+x = df[['pickup_longitude','pickup_latitude','dropoff_longitude','dropoff_latitude','passenger_count','hour','day','month','year','dayofweek','dist_travel_km']]
+
+y = df['fare_amount']
+
+"""### Dividing the dataset into training and testing dataset"""
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(x,y,test_size = 0.20)
+
+X_train
+
+X_test
+
+y_train
+
+y_test
+
+"""### Linear Regression"""
+
+from sklearn.linear_model import LinearRegression
+regression = LinearRegression()
+
+regression.fit(X_train,y_train)
+
+regression.intercept_ #To find the linear intercept
+
+regression.coef_ #To find the linear coeeficient
+
+prediction = regression.predict(X_test) #To predict the target values
+
+print(prediction)
+
+y_test
+
+"""### Metrics Evaluation using R2, Mean Squared Error, Root Mean Sqared Error"""
+
+from sklearn.metrics import r2_score
+
+r2_score(y_test,prediction)
+
+from sklearn.metrics import mean_squared_error
+
+MSE = mean_squared_error(y_test,prediction)
+
+MSE
+
+RMSE = np.sqrt(MSE)
+
+RMSE
+
+"""### Random Forest Regression"""
+
+from sklearn.ensemble import RandomForestRegressor
+
+
+
+rf = RandomForestRegressor(n_estimators=50) #Here n_estimators means number of trees you want to build before making the prediction
+
+rf.fit(X_train,y_train)
+
+y_pred = rf.predict(X_test)
+
+y_pred
+
+"""### Metrics evaluatin for Random Forest"""
+
+R2_Random = r2_score(y_test,y_pred)
+
+R2_Random
+
+MSE_Random = mean_squared_error(y_test,y_pred)
+
+MSE_Random
+
+RMSE_Random = np.sqrt(MSE_Random)
+
+RMSE_Random
+
+
+
+
+
+
+# -*- coding: utf-8 -*-
+"""ML_Assignment_2.ipynb
+
+Automatically generated by Colab.
+
+Original file is located at
+    https://colab.research.google.com/drive/16nuNsnIPmh5CtCrdzakpymrT56MFR2S6
+
+## Assignment 2
+2.	Classify the email using the binary classification method. Email Spam detection has two states: a) Normal State – Not Spam, b) Abnormal State – Spam. Use K-Nearest Neighbors and Support Vector Machine for classification. Analyze their performance.
+Dataset link: The emails.csv dataset on the Kaggle https://www.kaggle.com/datasets/balaka18/email-spam-classification-dataset-csv
+"""
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('ignore')
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn import metrics
+
+df=pd.read_csv('/content/emails.csv')
+
+df
+
+df.head()
+
+df.info
+
+df.shape
+
+df.columns
+
+df.isnull().sum()
+
+df.dropna(inplace = True)
+
+df.drop(['Email No.'],axis=1,inplace=True)
+X = df.drop(['Prediction'],axis = 1)
+y = df['Prediction']
+
+df
+
+from sklearn.preprocessing import scale
+X = scale(X)
+# split into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 42)
+
+X
+
+X_train
+
+X_test
+
+y_train
+
+y_test
+
+X_train.shape
+
+X_test.shape
+
+y_train.shape
+
+y_test.shape
+
+"""##KNN classifier"""
+
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=3)
+
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+print("Prediction",y_pred)   # 1 for spam 0 for not spam
+
+print("KNN accuracy = ",metrics.accuracy_score(y_test,y_pred))
+
+print("Confusion matrix",metrics.confusion_matrix(y_test,y_pred))
+
+"""## SVM classifier"""
+
+# cost C = 1
+model = SVC()   # C is an offset value to account for some mis-classification of data that can happen.
+
+# fit
+model.fit(X_train, y_train)
+
+# predict
+y_pred = model.predict(X_test)
+
+print("SVM accuracy = ",metrics.accuracy_score(y_test,y_pred))
+
+metrics.confusion_matrix(y_true=y_test, y_pred=y_pred)
+
+
+
+
+# -*- coding: utf-8 -*-
+"""ML_3_41157.ipynb
+
+Automatically generated by Colab.
+
+Original file is located at
+    https://colab.research.google.com/drive/1eVwV7CZv7cIOCdmogM6kb_BkZp3xs3RF
+
+# Given a bank customer, build a neural network-based classifier that can determine whether they will leave or not in the next 6 months.
+Dataset Description: The case study is from an open-source dataset from Kaggle. The dataset contains 10,000 sample points with 14 distinct features such as CustomerId, CreditScore, Geography, Gender, Age, Tenure, Balance, etc.
+Link to the Kaggle project: https://www.kaggle.com/barelydedicated/bank-customer-churn-modeling Perform following steps:
+1.	Read the dataset.
+2.	Distinguish the feature and target set and divide the data set into training and test sets.
+3.	Normalize the train and test data.
+4.	Initialize and build the model. Identify the points of improvement and implement the same.
+5.	Print the accuracy score and confusion matrix.
+"""
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt #Importing the libraries
+
+df = pd.read_csv("/content/Churn_Modelling.csv")
+
+"""# Preprocessing."""
+
+df.head()
+
+df.shape
+
+df.describe()
+
+df.isnull()
+
+df.isnull().sum()
+
+df.info()
+
+df.dtypes
+
+df.columns  # our target column is exited 1 mean customer left bank 0 mean customer exist in bank
+
+df.duplicated().sum()
+
+df['Exited'].value_counts()    # 0 indicate people stay with bank and 1 left the bank shown in balance
+
+df['Geography'].value_counts()
+
+df['Gender'].value_counts()
+
+df.drop(columns=['RowNumber','CustomerId','Surname'],inplace=True)  #dropping unnecssary column inplace means permanantly removed
+
+df.head()
+
+# Now convert categorical column into one hot encoder Geography and gender
+
+df=pd.get_dummies(df,columns=['Geography','Gender'],drop_first=True)   #drop first it helps in reducing the extra column created during dummy variable creation. see gender
+
+df
+
+# Now see column X and Y
+X = df.drop(columns=['Exited'])
+y = df['Exited']
+
+X
+
+y
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.3, random_state=1)
+
+X_train.shape
+
+# Now scale the values
+
+# Normalizing the values with mean as 0 and Standard Deviation as 1
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+
+X_train_scaled = scaler.fit_transform(X_train)
+
+X_test_scaled = scaler.transform(X_test)
+
+X_train_scaled   # shown 2 D array with small values
+
+X_train_scaled.shape
+
+X_test_scaled
+
+"""# Visualization"""
+
+def visualization(x, y, xlabel):
+    plt.figure(figsize=(10,5))
+    plt.hist([x, y], color=['red', 'green'], label = ['exit', 'not_exit'])
+    plt.xlabel(xlabel,fontsize=20)
+    plt.ylabel("No. of customers", fontsize=20)
+    plt.legend()
+
+df_churn_exited = df[df['Exited']==1]['Tenure']     #customer left the bank
+df_churn_not_exited = df[df['Exited']==0]['Tenure']  #customer not left the bank
+
+visualization(df_churn_exited, df_churn_not_exited, "Tenure")
+
+df_churn_exited2 = df[df['Exited']==1]['Age']
+df_churn_not_exited2 = df[df['Exited']==0]['Age']
+
+visualization(df_churn_exited2, df_churn_not_exited2, "Age")
+
+"""# Building the Classifier Model using Keras"""
+
+import keras #Keras is an Open Source Neural Network library written in Python that runs on top of Theano or Tensorflow.
+# we Can use Tenserflow as well but won't be able to understand the errors initially.
+
+from keras.models import Sequential #To create sequential neural network layers in a sequential order
+from keras.layers import Dense #To create hidden layers
+
+classifier = Sequential()  # sequential is class name ie a predictive modeling problem where you have some sequence of inputs over space or time, and the task is to predict a category for the sequence
+#Units: it denotes the output size of the layer, normally average of no of node in input layer (no of independent variable) which is 11 and no of node in output layer which is 1, we took 6 as average.
+#Kernel_initializer : The initializer parameters tell Keras how to initialize the values of our layer, weight matrix and our bias vector
+#Activation: Element-wise activation function to be used in the dense layer. read more about Rectified Linear Unit (ReLU)
+#Input_dim: for first layer only, number of input independent variable. only for first hidden layer
+#Bias : if we are going with advance implementation
+
+classifier.add(Dense(units =3 , activation='sigmoid', kernel_initializer='uniform', input_dim = 11))   #input layer 11 hidden layer=3 #uniform is type of distribution
+
+classifier.add(Dense(units =1 , activation='sigmoid', kernel_initializer='uniform',))  # output layer is 1
+
+classifier.summary()
+
+# 11*3 + 3 bias=36
+# 3*1 + 1 bias = 4
+# total= 36+4= 40
+
+#!pip install ann_visualizer
+#!pip install graphviz
+
+#from ann_visualizer.visualize import ann_viz;
+#Build your model here
+#ann_viz(classifier,title="ANN Model Diagram");
+
+# Now compile model using loss function it is binary classification problem
+
+
+# Optimizer: update the weight parameters to minimize the loss function..
+# Loss function: acts as guides to the terrain telling optimizer if it is moving in the right direction to reach the bottom of the valley, the global minimum.
+# Metrics: A metric function is similar to a loss except that the results from evaluating a metric are not used when training the model.
+# Batch size: hyper-parameter related to sample
+# Epochs: hyper-parameter related to iteration
+
+classifier.compile(optimizer="adam",loss = 'binary_crossentropy',metrics = ['accuracy']) #To compile the Artificial Neural Network. Ussed Binary crossentropy as we just have only two output
+classifier.fit(X_train_scaled,y_train,batch_size = 10,epochs=10, validation_split=0.2 )
+
+# now check the value of weight and bias value
+
+classifier.layers[0].get_weights()
+
+# output shown 33 layers connection 3 bias
+
+classifier.layers[1].get_weights()
+
+# output shown 3 layers connection 1 bias
+
+# Now predict the model
+
+classifier.predict(X_test_scaled)
+
+# output not shown 1 or 0 because you use sigmoid due to this we need convert the probability into 0 and 1
+
+# assume threshold 0.5
+# if threshold less than 0.5 customer left the bank
+# if threshold greater than 0.5 customer not left the bank
+
+y_log= classifier.predict(X_test_scaled)  # y_log is just name of varriable
+
+y_pred= np.where(y_log>0.5,1,0)
+
+# Now check accuracy of model
+
+from sklearn.metrics import accuracy_score
+accuracy_score(y_test,y_pred)
+
+from keras.metrics import Accuracy
+# now check accuracy
+classifier.compile(loss='binary_crossentropy',optimizer = 'Adam', metrics=['Accuracy'])  # Adam perform good for our gradient decent algorithm
+
+history = classifier.fit(X_train_scaled,y_train,batch_size = 10,epochs=50, validation_split=0.2 )   # validation_split=0.2 mean seperate 20% customer out of avalible 10,000 customer
+
+# output shown loss on training data with accuracy and validation loss and accuracy for 20% testing data ie 0.2 we taken earlier
+
+classifier.layers[0].get_weights()
+
+classifier.layers[1].get_weights()
+
+#classifier.layers[2].get_weights()
+
+y_log= classifier.predict(X_test_scaled)  # y_log is just name of varriable
+
+y_pred= np.where(y_log>0.5,1,0)
+
+# Now check accuracy of model
+
+from sklearn.metrics import accuracy_score
+accuracy_score(y_test,y_pred)
+
+# accuracy shown reduce due to overfitting of model but we need more accuracy
+
+import matplotlib.pyplot as plt
+
+acc=history.history['loss']
+val_acc=history.history['Accuracy']
+loss=history.history['val_loss']
+val_loss=history.history['val_Accuracy']
+# so history dictionary created
+# out shown training loss , training Accuracy, validation loss, validation accuracy
+
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+
+plt.plot(history.history['Accuracy'])
+
+plt.plot(history.history['val_Accuracy'])
+
+from sklearn.metrics import confusion_matrix,accuracy_score,classification_report
+
+cm = confusion_matrix(y_test,y_pred)
+
+cm
+
+accuracy = accuracy_score(y_test,y_pred)
+
+accuracy
+
+plt.figure(figsize = (10,7))
+sns.heatmap(cm,annot = True)
+plt.xlabel('Predicted')
+plt.ylabel('Truth')
+
+print(classification_report(y_test,y_pred))
+
+#Precision of the model is 83 %. It looks good on paper but we should easily be able to get 100% with a more complex model.
+
+
+
+
+# -*- coding: utf-8 -*-
+"""ML_Assignmet_5_.ipynb
+
+Automatically generated by Colab.
+
+Original file is located at
+    https://colab.research.google.com/drive/1teJHazjoYMrk4JdgCnvOfEu0qfxOrB36
+
+# Assignment 5
+KNN algorithm on diabetes dataset
+"""
+
+# Commented out IPython magic to ensure Python compatibility.
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+# %matplotlib inline
+import warnings
+warnings.filterwarnings('ignore')
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn import metrics
+
+df=pd.read_csv('/content/diabetes.csv')
+
+df
+
+df.columns
+
+df.info(verbose=True)
+
+df.describe()
+
+"""Check for null values. If present remove null values from the dataset"""
+
+df.isnull().sum()
+
+"""Outcome is the label/target, other columns are features"""
+
+X = df.drop('Outcome',axis = 1)
+y = df['Outcome']
+
+from sklearn.preprocessing import scale
+X = scale(X)
+# split into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, random_state = 14)
+
+X_train.shape
+
+y_train.shape
+
+X_test.shape
+
+y_test.shape
+
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=3)
+
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+
+#  The confusion matrix is used to evaluate the accuracy of classification.
+# The first column and first row represent True Positive, the second column and
+# first row represent False Positive, the second row and first column represent False Negative,
+# and the second row and second column represent True Negative.
+
+print("Confusion matrix: ")
+cs = metrics.confusion_matrix(y_test,y_pred)
+print(cs)
+
+pd.crosstab(y_test, y_pred, rownames=['True'], colnames=['Predicted'], margins=True)
+
+print("Accuracy ",metrics.accuracy_score(y_test,y_pred))
+
+# 137+35= 172/231= 74.45%
+
+# Accuracy = 1 – Misclassification rate    1 - 0.2554 = 0.7446
+
+# Accuracy (ACC) is calculated as the number of all correct predictions divided by the total number of the dataset.
+
+# Accuracy = 1 – Error Rate.
+
+# The best accuracy is 1.0, whereas the worst is 0.0.
+
+# Error Rate = 1 – Accuracy
+
+# Outcome takes values 0 or 1 where 0 indicates negative for diabetes and 1 indicates positive for diabetes.
+
+# Error rate (ERR) is calculated as the number of all incorrect predictions divided by the total number of the dataset.(positive+negative)
+
+# The best error rate is 0.0, whereas the worst is 1.0.
+
+# Misclassification Rate =  incorrect predictions / total predictions.
+# 59 / 231 = 0.25
+
+# Misclassification Rate = (false positive + false negative) / (total predictions)
+# 20 + 39 = 59/231 = 0.25
+
+total_misclassified = cs[0,1] + cs[1,0]
+print(total_misclassified)
+
+total_examples = cs[0,0]+cs[0,1]+cs[1,0]+cs[1,1]
+print(total_examples)
+
+print("Total Sample",total_examples)
+print("Error rate ",1-metrics.accuracy_score(y_test,y_pred))
+
+# Precision Score
+
+# TP – True Positives
+# FP – False Positives
+# Precision is the ratio of correctly predicted positive observations to the total predicted positive observations.
+# Precision – Accuracy of positive predictions.
+# Precision = TP/(TP + FP)
+
+print("Precision score",metrics.precision_score(y_test,y_pred))
+
+# Recall Score
+# FN – False Negatives
+
+# Recall(sensitivity or true positive rate): Fraction of positives that were correctly identified.
+# Recall (Sensitivity) - Recall is the ratio of correctly predicted positive observations to the all observations in actual class - yes.
+# Recall = TP/(TP+FN)
+
+# Sensitivity: The “true positive rate” – the percentage of positive outcomes the model is able to detect.
+# Specificity: The “true negative rate” – the percentage of negative outcomes the model is able to detect.
+
+print("Recall score ",metrics.recall_score(y_test,y_pred))
+
+print("Classification report ",metrics.classification_report(y_test,y_pred))
+# F1 Score- A helpful metric for comparing two classifier
+# F1 Score: A metric that tells us the accuracy of a model, relative to how the data is distributed.
+# It is created by finding the the harmonic mean of precision and recall.
+# F1 = 2 * (precision * recall)/(precision + recall)
+
+
+
+
+# -*- coding: utf-8 -*-
+"""Ml_6.ipynb
+
+Automatically generated by Colab.
+
+Original file is located at
+    https://colab.research.google.com/drive/1tqnsBFSQ7l0iHy_mDxDK6F-jLg_q9I1B
+
+# Implement K-Means clustering/ hierarchical clustering on sales_data_sample.csv dataset. Determine the number of clusters using the elbow method.
+"""
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+#Importing the required libraries.
+
+from sklearn.cluster import KMeans, k_means #For clustering
+from sklearn.decomposition import PCA # Linear Dimensionality reduction.
+
+df = pd.read_csv("/content/sales_data_sample.csv",encoding='latin1') #Loading the dataset.
+
+"""## Preprocessing"""
+
+df.head()
+
+df.shape
+
+df.describe()
+
+df.info()
+
+df.isnull().sum()
+
+df.dtypes
+
+df_drop  = ['ADDRESSLINE1', 'ADDRESSLINE2', 'STATUS','POSTALCODE', 'CITY', 'TERRITORY', 'PHONE', 'STATE', 'CONTACTFIRSTNAME', 'CONTACTLASTNAME', 'CUSTOMERNAME', 'ORDERNUMBER']
+df = df.drop(df_drop, axis=1) #Dropping the categorical uneccessary columns along with columns having null values. Can't fill the null values are there are alot of null values.
+
+df.isnull().sum()
+
+df.dtypes
+
+df.duplicated( keep='first').sum()
+
+df.isna().sum() #finding missing values
+
+# Checking the categorical columns.
+
+df['COUNTRY'].unique()
+
+df['PRODUCTLINE'].unique()
+
+df['DEALSIZE'].unique()
+
+productline = pd.get_dummies(df['PRODUCTLINE']) #Converting the categorical columns.
+Dealsize = pd.get_dummies(df['DEALSIZE'])
+
+df = pd.concat([df,productline,Dealsize], axis = 1)
+
+df
+
+df_drop  = ['COUNTRY','PRODUCTLINE','DEALSIZE'] #Dropping Country too as there are alot of countries.
+df = df.drop(df_drop, axis=1)
+
+df['PRODUCTCODE'] = pd.Categorical(df['PRODUCTCODE']).codes #Converting the datatype.
+
+df.drop('ORDERDATE', axis=1, inplace=True) #Dropping the Orderdate as Month is already included.
+
+df.dtypes #All the datatypes are converted into numeric
+
+"""### Plotting the Elbow Plot to determine the number of clusters."""
+
+# before we implement the k-means and assign the centers of our data, we can also make a quick analyze to
+
+# find the optimal number (centers) of clusters using Elbow Method.
+
+# Elbow Method is one of the most popular methods to determine this optimal value of k.
+
+# Distortion: It is calculated as the average of the squared distances from the cluster centers of the respective clusters. Typically, the Euclidean distance metric is used.
+# Inertia: It is the sum of squared distances of samples to their closest cluster center.
+
+# The KMeans algorithm clusters data by trying to separate samples in n groups of equal variances, minimizing a criterion known as inertia, or within-cluster sum-of-squares Inertia, or
+# the within-cluster sum of squares criterion, can be recognized as a measure of how internally coherent clusters are.
+
+# The k-means algorithm divides a set of N samples X into K disjoint clusters C, each described by the mean j of the samples in the cluster.
+# The means are commonly called the cluster centroids.
+
+# The K-means algorithm aims to choose centroids that minimize the inertia, or within-cluster sum of squared criterion.
+
+from sklearn.cluster import KMeans
+distortions = []
+K = range(1,10)
+for k in K:
+    kmeanModel = KMeans(n_clusters=k)
+    kmeanModel.fit(df)
+    distortions.append(kmeanModel.inertia_)
+
+kmeanModel
+
+kmeanModel.cluster_centers_
+
+kmeanModel.inertia_
+
+# The lower values of inertia are better and zero is optimal.
+
+# We can see that the model has very high inertia. So, this is not a good model fit to the data.
+
+# check how many of the samples were correctly labeled
+
+label = kmeanModel.labels_
+
+label
+
+plt.figure(figsize=(16,8))
+plt.plot(K, distortions, 'bx-')
+plt.xlabel('k')
+plt.ylabel('Distortion')
+plt.title('The Elbow Method showing the optimal k')
+plt.show()
+
+"""## As the number of k increases Inertia decreases.
+## Observations: A Elbow can be observed at 3 and after that the curve decreases gradually.
+"""
+
+X_train = df.values #Returns a numpy array.
+
+X_train.shape
+
+model = KMeans(n_clusters=3,random_state=2) #Number of cluster = 3
+model = model.fit(X_train) #Fitting the values to create a model.
+predictions = model.predict(X_train) #Predicting the cluster values (0,1,or 2)
+
+predictions
+
+#3 clusters within 0, 1, and 2 numbers. We can also merge the result of the clusters with our original data table like this:
+
+unique,counts = np.unique(predictions,return_counts=True)
+
+unique
+
+counts
+
+counts = counts.reshape(1,3)   # 1 row and 3 column
+
+counts
+
+counts_df = pd.DataFrame(counts,columns=['Cluster1','Cluster2','Cluster3'])
+
+counts_df.head()
+
+"""## Visualization"""
+
+pca = PCA(n_components=2) #Converting all the features into 2 columns to make it easy to visualize using Principal COmponent Analysis.
+
+reduced_X = pd.DataFrame(pca.fit_transform(X_train),columns=['PCA1','PCA2']) #Creating a DataFrame.
+
+reduced_X.head()
+
+#Plotting the normal Scatter Plot
+plt.figure(figsize=(14,10))
+plt.scatter(reduced_X['PCA1'],reduced_X['PCA2'])
+
+model.cluster_centers_ #Finding the centriods. (3 Centriods in total. Each Array contains a centroids for particular feature )
+
+reduced_centers = pca.transform(model.cluster_centers_) #Transforming the centroids into 3 in x and y coordinates
+
+reduced_centers
+
+plt.figure(figsize=(14,10))
+plt.scatter(reduced_X['PCA1'],reduced_X['PCA2'])
+plt.scatter(reduced_centers[:,0],reduced_centers[:,1],color='black',marker='x',s=300) #Plotting the centriods
+
+reduced_X['Clusters'] = predictions #Adding the Clusters to the reduced dataframe.
+
+reduced_X.head()
+
+#Plotting the clusters
+plt.figure(figsize=(14,10))
+#                     taking the cluster number and first column           taking the same cluster number and second column      Assigning the color
+plt.scatter(reduced_X[reduced_X['Clusters'] == 0].loc[:,'PCA1'],reduced_X[reduced_X['Clusters'] == 0].loc[:,'PCA2'],color='slateblue')
+plt.scatter(reduced_X[reduced_X['Clusters'] == 1].loc[:,'PCA1'],reduced_X[reduced_X['Clusters'] == 1].loc[:,'PCA2'],color='springgreen')
+plt.scatter(reduced_X[reduced_X['Clusters'] == 2].loc[:,'PCA1'],reduced_X[reduced_X['Clusters'] == 2].loc[:,'PCA2'],color='indigo')
+
+
+plt.scatter(reduced_centers[:,0],reduced_centers[:,1],color='black',marker='x',s=300)
+
+
+
+
+#########################################################################################################################################################################################################################################################################################################################################################
+
+
+#######################################################################################################
+
+Bank Application in solidity
+
+
+
+pragma solidity >=0.7.0 <0.9.0;
+
+contract SimpleBank {
+    
+    struct ClientAccount {
+        int client_id; // Client ID
+        address client_address; // Client Address
+        uint client_balance_in_ether; // Client Ether balance
+    }
+
+    ClientAccount[] clients; // Array to store all client information
+    int clientCounter; // Counter for client IDs
+    address payable manager; // Payable address of manager
+
+    // Modifier to allow only the manager to execute certain functions
+    modifier onlyManager() {
+        require(msg.sender == manager, "Only manager can call this!");
+        _; // Execute the function after checking
+    }
+
+    // Modifier to allow only registered clients to execute certain functions
+    modifier onlyClients() {
+        bool isClient = false; // Initially set isClient to false
+        for (uint i = 0; i < clients.length; i++) {
+            if (clients[i].client_address == msg.sender) { // Check if sender is a registered client
+                isClient = true;
+                break;
+            }
+        }
+        require(isClient, "Only clients can call this!"); // Only proceed if sender is a client
+        _;
+    }
+
+    // Constructor to initialize client counter and manager
+    constructor() {
+        clientCounter = 0; // Initialize client counter
+    }
+
+    // Fallback function to allow contract to receive ether
+    receive() external payable {}
+
+    // Function to set the manager's address
+    function setManager(address managerAddress) public returns (string memory) {
+        manager = payable(managerAddress); // Set manager's address as payable
+        return "Manager address set successfully";
+    }
+
+    // Function for clients to join the contract
+    function joinAsClient() public payable returns (string memory) {
+        clients.push(ClientAccount(clientCounter++, msg.sender, msg.value / 1 ether)); // Add client with balance in ethers
+        return "Client joined successfully";
+    }
+
+    // Function for clients to deposit ether to the contract
+    function deposit() public payable onlyClients {
+        require(msg.value > 0, "Deposit amount must be greater than 0");
+        // Transfer the deposited ether to the contract
+        payable(address(this)).transfer(msg.value);
+    }
+
+    // Function for clients to withdraw ether from the contract
+    function withdraw(uint amount) public onlyClients {
+        require(amount > 0, "Withdraw amount must be greater than 0");
+        require(address(this).balance >= amount * 1 ether, "Insufficient contract balance");
+        // Transfer the specified amount of ether to the client
+        payable(msg.sender).transfer(amount * 1 ether);
+    }
+
+    // Function for manager to send interest to all clients
+    function sendInterest() public payable onlyManager {
+        require(clients.length > 0, "No clients to send interest to");
+        require(address(this).balance >= clients.length * 1 ether, "Insufficient balance to send interest");
+
+        // Send 1 ether as interest to each client
+        for (uint i = 0; i < clients.length; i++) {
+            payable(clients[i].client_address).transfer(1 ether);
+        }
+    }
+
+    // Function to get the balance of the contract
+    function getContractBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+}
+
+
+
+
+#####################################################################################################################################
+
+student data
+
+pragma solidity ^0.5.0;
+
+contract StudentData {
+
+    struct Student {
+        uint id;
+        string name;
+    }
+
+    Student[] public students; // Array to store student information
+    uint public nextId = 1; // Initialize ID to 1 for the first student
+
+    // Function to create a new student record
+    function createStudent(string memory name) public {
+        students.push(Student(nextId, name)); // Add student to the array
+        nextId++; // Increment nextId for unique IDs
+    }
+
+    // Function to read a student's data based on ID
+    function readStudent(uint id) view public returns(uint, string memory) {
+        for (uint i = 0; i < students.length; i++) {
+            if (students[i].id == id) {
+                return (students[i].id, students[i].name); // Return student data if ID matches
+            }
+        }
+        revert("Student does not exist"); // Revert if student is not found
+    }
+
+    // Function to update a student's name based on ID
+    function updateStudent(uint id, string memory name) public {
+        for (uint i = 0; i < students.length; i++) {
+            if (students[i].id == id) {
+                students[i].name = name; // Update student's name
+                return;
+            }
+        }
+        revert("Student does not exist"); // Revert if student is not found
+    }
+
+    // Function to delete a student's record based on ID
+    function deleteStudent(uint id) public {
+        uint index = findStudent(id); // Find index of student in the array
+        delete students[index]; // Delete student record
+    }
+
+    // Internal function to find a student by ID
+    function findStudent(uint id) view internal returns(uint) {
+        for (uint i = 0; i < students.length; i++) {
+            if (students[i].id == id) {
+                return i; // Return index if student is found
+            }
+        }
+        revert("Student does not exist"); // Revert if student is not found
+    }
+
+    // Fallback function to handle transactions with no data
+    function() external payable {
+        // Fallback function to allow contract to receive Ether
+    }
+}
+
+
+
+
+
